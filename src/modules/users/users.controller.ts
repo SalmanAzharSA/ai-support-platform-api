@@ -7,7 +7,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -18,11 +18,38 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  //   @Post()
+  //   create(@Body() createUserDto: CreateUserDto) {
+  //     return this.usersService.create(createUserDto);
+  //   }
+  @ApiOperation({
+    summary: 'Create a new user',
+    description: 'Creates a new platform user account',
+  })
+  @ApiBody({
+    type: CreateUserDto,
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'User created successfully',
+  })
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
+  //   @Get()
+  //   findAll() {
+  //     return this.usersService.findAll();
+  //   }
+  @ApiOperation({
+    summary: 'Get all users',
+    description: 'Fetch all platform users',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Users fetched successfully',
+  })
   @Get()
   findAll() {
     return this.usersService.findAll();
