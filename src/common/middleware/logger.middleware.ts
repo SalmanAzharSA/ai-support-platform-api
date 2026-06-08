@@ -17,3 +17,5 @@ export class LoggerMiddleware implements NestMiddleware {
     next();
   }
 }
+
+//nestjs-pino for production logging with better performance and structured logs:
