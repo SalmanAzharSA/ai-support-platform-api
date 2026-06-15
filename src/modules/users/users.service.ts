@@ -110,4 +110,10 @@ export class UsersService {
       refreshTokenHash,
     });
   }
+
+  async updateLastLoginAt(userId: string) {
+    await this.usersRepository.update(userId, {
+      lastLoginAt: new Date(),
+    });
+  }
 }

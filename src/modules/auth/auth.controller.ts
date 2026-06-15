@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  UseGuards,
+  Headers,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -99,7 +107,10 @@ export class AuthController {
   })
   @UseGuards(JwtAuthGuard)
   @Post('logout')
-  logout(@Req() req: Request) {
-    return this.authService.logout((req.user as any).id);
+  logout(@Req() req: Request & { user: any }) {
+    const authorization = req.headers.authorization;
+    const accessToken = authorization?.replace('Bearer ', '');
+
+    return this.authService.logout(req.user.id, accessToken);
   }
 }

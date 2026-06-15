@@ -53,6 +53,8 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
+    await this.usersService.updateLastLoginAt(user.id);
+
     const { passwordHash, refreshTokenHash, ...safeUser } = user;
 
     const tokens = await this.generateTokens(safeUser);
@@ -121,8 +123,8 @@ export class AuthService {
     };
   }
 
-  async logout(userId: string) {
-    await this.usersService.updateRefreshTokenHash(userId, null);
+  async logout(userId: string, accessToken: string) {
+    await this.usersService.updateRefreshTokenHash(userId, accessToken);
 
     return {
       message: 'Logout successful',
