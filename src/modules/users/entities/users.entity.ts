@@ -12,6 +12,7 @@ export enum UserRole {
   USER = 'user',
   ADMIN = 'admin',
   OWNER = 'owner',
+  agENT = 'agent',
 }
 
 @Entity('users')
@@ -26,7 +27,10 @@ export class User {
   @Column({ nullable: true })
   fullName?: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, select: false })
+  refreshTokenHash?: string;
+
+  @Column({ nullable: true, select: false })
   // @Exclude() // Exclude passwordHash from query results by default
   passwordHash?: string;
 
