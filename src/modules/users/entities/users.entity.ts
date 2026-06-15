@@ -26,7 +26,7 @@ export class User {
   @Column({ nullable: true })
   fullName?: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, select: false })
   // @Exclude() // Exclude passwordHash from query results by default
   passwordHash?: string;
 

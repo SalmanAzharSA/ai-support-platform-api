@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/users.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -26,10 +27,12 @@ export class UsersService {
       throw new ConflictException('Email already exists');
     }
 
+    const passwordHash = await bcrypt.hash(createUserDto.password, 10);
+
     const user = this.usersRepository.create({
       email: createUserDto.email,
       fullName: createUserDto.fullName,
-      passwordHash: createUserDto.password, // temporary, auth hashing later
+      passwordHash, // Hash the password before saving
     });
     return this.usersRepository.save(user);
   }
@@ -78,5 +81,13 @@ export class UsersService {
     return {
       message: 'User deleted successfully',
     };
+  }
+
+  async findByEmailWithPassword(email: string) {
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .addSelect('user.passwordHash')
+      .where('user.email = :email', { email })
+      .getOne();
   }
 }
