@@ -34,7 +34,9 @@ export class UsersService {
       fullName: createUserDto.fullName,
       passwordHash, // Hash the password before saving
     });
-    return this.usersRepository.save(user);
+    const savedUser = await this.usersRepository.save(user);
+    const { passwordHash: _, ...safeUser } = savedUser;
+    return safeUser;
   }
 
   async findAll() {
@@ -89,5 +91,23 @@ export class UsersService {
       .addSelect('user.passwordHash')
       .where('user.email = :email', { email })
       .getOne();
+  }
+
+  async findByIdWithRefreshToken(id: string) {
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .addSelect('user.refreshTokenHash')
+      .where('user.id = :id', { id })
+      .getOne();
+  }
+
+  async updateRefreshTokenHash(userId: string, refreshToken: string | null) {
+    const refreshTokenHash = refreshToken
+      ? await bcrypt.hash(refreshToken, 10)
+      : null;
+
+    await this.usersRepository.update(userId, {
+      refreshTokenHash,
+    });
   }
 }

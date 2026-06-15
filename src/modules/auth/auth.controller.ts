@@ -12,6 +12,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -66,5 +67,39 @@ export class AuthController {
       message: 'Authenticated user fetched successfully',
       data: req.user,
     };
+  }
+
+  @ApiOperation({
+    summary: 'Refresh access token',
+    description: 'Generate a new access token using a valid refresh token.',
+  })
+  @ApiBody({ type: RefreshTokenDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Tokens refreshed successfully.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid refresh token.',
+  })
+  @Post('refresh')
+  refreshTokens(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.refreshTokens(refreshTokenDto);
+  }
+
+  @ApiOperation({
+    summary: 'Logout user',
+    description:
+      'Logs out the authenticated user by clearing stored refresh token.',
+  })
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: 'Logout successful.',
+  })
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  logout(@Req() req: Request) {
+    return this.authService.logout((req.user as any).id);
   }
 }

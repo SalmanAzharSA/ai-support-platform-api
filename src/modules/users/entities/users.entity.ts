@@ -27,6 +27,9 @@ export class User {
   fullName?: string;
 
   @Column({ nullable: true, select: false })
+  refreshTokenHash?: string;
+
+  @Column({ nullable: true, select: false })
   // @Exclude() // Exclude passwordHash from query results by default
   passwordHash?: string;
 
