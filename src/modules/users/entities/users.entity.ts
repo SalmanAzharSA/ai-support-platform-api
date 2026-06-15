@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   Index,
 } from 'typeorm';
+// import { Exclude } from 'class-transformer';
 
 export enum UserRole {
   USER = 'user',
@@ -26,6 +27,7 @@ export class User {
   fullName?: string;
 
   @Column({ nullable: true })
+  // @Exclude() // Exclude passwordHash from query results by default
   passwordHash?: string;
 
   @Column({
