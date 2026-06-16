@@ -25,11 +25,13 @@ export class OrganizationMember {
   id: string;
 
   @Index()
-  @Column({ unique: true })
+  @Column()
+  //   @Column({ unique: true })
   organizationId: string;
 
   @Index()
-  @Column({ unique: true })
+  @Column()
+  //   @Column({ unique: true })
   userId: string;
 
   @Column({
