@@ -23,6 +23,8 @@ import { UpdateOrganizationDto } from './dto/update-organization.dto';
 import { OrganizationsService } from './organizations.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RequestOrganizationDeletionDto } from './dto/src/modules/organizations/dto/request-organization-deletion.dto';
+import { UpdateOrganizationMemberRoleDto } from './dto/update-organization-member-role.dto';
+import { AddOrganizationMemberDto } from './dto/add-organization-member.dto';
 
 @ApiTags('Organizations')
 @ApiBearerAuth()
@@ -166,5 +168,46 @@ export class OrganizationsController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     return this.organizationsService.cancelDeletion(req.user.id, id);
+  }
+
+  @Post(':id/members')
+  addMember(
+    @Req() req: Request & { user: any },
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() addMemberDto: AddOrganizationMemberDto,
+  ) {
+    return this.organizationsService.addMember(req.user.id, id, addMemberDto);
+  }
+
+  @Get(':id/members')
+  findMembers(
+    @Req() req: Request & { user: any },
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.organizationsService.findMembers(req.user.id, id);
+  }
+
+  @Patch(':id/members/:memberId/role')
+  updateMemberRole(
+    @Req() req: Request & { user: any },
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('memberId', ParseUUIDPipe) memberId: string,
+    @Body() updateRoleDto: UpdateOrganizationMemberRoleDto,
+  ) {
+    return this.organizationsService.updateMemberRole(
+      req.user.id,
+      id,
+      memberId,
+      updateRoleDto,
+    );
+  }
+
+  @Delete(':id/members/:memberId')
+  removeMember(
+    @Req() req: Request & { user: any },
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('memberId', ParseUUIDPipe) memberId: string,
+  ) {
+    return this.organizationsService.removeMember(req.user.id, id, memberId);
   }
 }
